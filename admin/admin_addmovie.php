@@ -1,26 +1,33 @@
 <?php
 	require_once('phpscripts/config.php');
 
+	//use getall that rewuires:
+	$tbl = "tbl_genre";
+	$genQuery = getAll($tbl);
+
+
+
 	if(isset($_POST['submit'])){
 
 		$title = trim($_POST['movTitle']);
-		$cover = $_FILES['movImage'];  //for files, _FILES
+		$cover = $_FILES['cover'];  //for files, _FILES
 		$year = trim($_POST['movYear']);
 		$runtime = trim($_POST['movRuntime']);
-		$stroyline = trim($_POST['movStorytime']);
+		$storyline = trim($_POST['movStorytime']);
 		$trailer = trim($_POST['movTrailer']);
 		$release = trim($_POST['movRelease']);
 
-		//$result = $title . " " . $year . " " . $runtime  . " " . $cover . " " . $storylime . " " . $trailer . " " . $release;
-		//echo $result;
+		$genre = $_POST['genList'];
+		$uploadMovie = addMovie($title, $cover, $year, $runtime, $storyline, $trailer, $release, $genre);
+		$message = $uploadMovie;
 
-		echo $cover['name'];
-		echo $cover['type'];
-		echo $cover['size']; //divide by 1024 if you want KB
-		echo $cover['tmp_name'];
+		//echo $cover['name'];
+		//echo $cover['type'];
+		//echo $cover['size']; //divide by 1024 if you want KB
+		//echo $cover['tmp_name'];
 
 		}else{
-			echo "didnt work";
+			//echo "didnt work";
 		}
 
 
@@ -38,7 +45,7 @@
 		<input type="text" name="movTitle" value="">
 		<br><br>
 		<label>Cover Image:</label>
-		<input type="file" name="movImage" value="">
+		<input type="file" name="cover" value="">
 		<br><br>
 		<label>Movie Year:</label>
 		<input type="text" name="movYear" value="">
@@ -55,8 +62,17 @@
 		<label>Movie Release:</label>
 		<input type="text" name="movRelease" value="">
 		<br><br>
+		<select name="genList">
+			<option value="">Please Select a Genre</option>
 
+<?php
+//Loop to add all genres to the option list in the select
+while($row = mysqli_fetch_array($genQuery)){
+	echo "<option value=\"{$row['genre_id']}\">{$row['genre_name']}</option>";
+	}
 
+?>
+</select>
 		<input type="submit" name="submit" value="Add Movie">
 	</form>
 </body>
