@@ -1,6 +1,7 @@
 <?php
 	//CHANGE FOLDER YOU ARE SAVING TO FROM READ ONLY TO WRITE
 	function addMovie($title, $cover, $year, $runtime, $storyline, $trailer, $release, $genre){
+		include("connect.php"); // Require once will not work since it was already called so you need to re include it (Since it was already trigger and wont work - reminder: close at bottom)
 		//echo "From addmovie.php";
 
 		//First thing to check is the file
@@ -24,8 +25,27 @@
 				//echo $size[1]; //Height
 				//Can check to see if width > height for portriat, and reverse, and if they are equal a sqaure
 
-		}
+				$addstring = "INSERT INTO tbl_movies VALUES(NULL, '{$cover['name']}', '{$title}', '{$year}', '{$runtime}','{$storyline}', '{$trailer}', '{$release}' ) ";
 
+				//echo $addstring;
+
+				$addresult = mysqli_query($link, $addstring);
+
+				if($addresult){
+					$qstring = "SELECT * FROM tbl_movies ORDER BY movies_ID DESC LIMIT 1";
+					$lastmovie = mysqli_query($link, $qstring);
+					$row = mysqli_fetch_array($lastmovie);
+					$lastID = $row['movies_id'];
+					//echo $lastID;
+
+					$genstring = "INSERT INTO tbl_mov_genre VALUES(NULL, {$lastID}, {$genre})"; //dealing with an integer so no qoutes around {$lastID} etc
+					$genresult = mysqli_query($link, $genstring);
+					redirect_to("admin_index.php");
+
+		}
+}
+
+				mysqli_close($link);
 
 
 	}
